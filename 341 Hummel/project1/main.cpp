@@ -250,7 +250,6 @@ int main()
         
         stringstream  ss(line);
         
-        
         //parse line
         getline(ss, dept, ',');
         getline(ss, number, ',');
