@@ -34,6 +34,8 @@ class Review{
   int rating;
   string reviewDate;
 
+  //Movie movieReviewed;
+
   public:
   
   Review(int rid, int mid, int uid, int rate, string date){
@@ -194,6 +196,76 @@ void printTop10Movies(vector<Movie> &movies, vector<Review> &reviews){
 
 }
 
+//TODO
+void printReview(Review &r){
+  //TODO: add name
+  cout<<"Movie: "<<r.getMovieID() <<"\t("<<r.getMovieID()<<")"<<endl;
+  cout<<"Num stars:\t"<<r.getRating()<<endl;;
+  cout<<"User id:\t"<<r.getUserID()<<endl;
+  cout<<"Date:\t\t"<<r.getReviewDate()<<endl;
+
+}
+//TODO
+void printMovie(Movie & m){
+  cout<<"Movie:\t\t"<<m.getMovieName()<<endl;
+  cout<<"Year:\t\t"<<m.getMovieYear()<<endl;
+  cout<<"Avg rating:\t"<<m.getMovieRating()<<endl;
+  cout<<"Num reviews:\t"<<m.getNumReviews()<<endl;
+  cout<<" 1 star:\t"<<endl;
+  cout<<" 2 star:\t"<<endl;
+  cout<<" 3 star:\t"<<endl;
+  cout<<" 4 star:\t"<<endl;
+  cout<<" 5 star:\t"<<endl;
+
+}
+
+void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
+  string input;
+  int num;
+
+  cout<<endl<<">> Movie and Review Information <<"<<endl<<endl;
+
+  while(true){
+    cout<<"Please enter a movie ID (< 100,000), a review ID (>= 100,000), 0 to stop> ";
+    cin>>input;
+    num = stoi(input);
+
+    cout<<endl;
+    if(num == 0) return;
+    else if(num>100000){
+      //searches reviews
+
+      for(auto &r: reviews){
+        if(r.getReviewID() == num){
+          printReview(r);
+          break;
+        }
+      }
+      //TODO
+      cout<<"review not found..."<<endl<<endl;
+      continue;
+
+    }
+    else {
+      //searches movies
+
+      for(auto &m: movies){
+        if(m.getMovieID() == num){
+          printMovie(m);
+          break;
+        }
+      }
+      //TODO
+      cout<<"movie not found..."<<endl<<endl;
+      continue;
+    }
+
+  }
+
+
+}
+
+
 
 int main()
 {
@@ -205,54 +277,24 @@ int main()
   cout << "** Netflix Movie Review Analysis **" << endl;
   cout << endl;
 
-  //
   // input the filenames to process:
-  //
-  
-
   moviesFN ="movies.csv";
   reviewsFN ="reviews.csv";
   // UN COMMENT WHEN DONE
   // cin >> moviesFN;
   // cin >> reviewsFN;
 
-
-
   cout << endl;
-
-  //
-  // TODO:
-  //
 
   parseMovieFile(moviesFN,movies);
   parseReviewFile(reviewsFN,reviews);
 
-  // for(Movie m: movies){
-  //   //cout<<m.calcuateAvgReview(reviews)<<endl;
-  //   //cout<<"MOVIES AVG RATE: "<<m.averageRating<<endl;
-  //   //m.setRating(m.calcuateAvgReview(reviews));
-    
+  //PART 1
+  //printTop10Movies(movies,reviews);
 
-  //   //m.calcuateAvgReview(reviews);
+  //PART 2
+  movieReviewInfo(movies,reviews);
 
-  // }
-
-  //sortMovies(movies);
-
-
-  // for(Movie m: movies){
-  //   cout<<m.getMovieName()<<": "<<m.averageRating<<endl;
-  // }
-
-  // for(int i =0;i<10; i++){
-  //   cout<<movies[i].getMovieName()<<endl;
-  // }
-
-  printTop10Movies(movies,reviews);
-
-  //
-  // done:
-  //
   cout << "** DONE! **" << endl << endl;
 
   return 0;
