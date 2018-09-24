@@ -21,32 +21,9 @@
 
 using namespace std;
 
-class Movie{
-  private:
+class Movie;
+class Review;
 
-  int movieID;
-  string movieName;
-  int yearPublished;
-
-  int numReviews;
-  double averageRating;
-
-  public:
-
-  Movie(int id, string name, int year){
-    movieID = id;
-    movieName = name;
-    yearPublished = year;
-
-  }
-
-  int getMovieID(){return movieID;}
-  string getMovieName(){return movieName;}
-  int getMovieYear(){return yearPublished;}
-  int getNumReviews(){return numReviews;}
-  double getMovieRating(){return averageRating;}
-
-};
 
 class Review{
   private:
@@ -68,7 +45,85 @@ class Review{
 
   }
 
+  int getReviewID(){return reviewID;}
+  int getMovieID(){return movieID;}
+  int getUserID(){return userID;}
+  int getRating(){return rating;}
+  string getReviewDate(){return reviewDate;}
 };
+
+class Movie{
+  private:
+
+  int movieID;
+  string movieName;
+  int yearPublished;
+
+  int numReviews;
+  double averageRating = 0.0;
+
+  vector<Review> movieReviews;
+
+  public:
+
+  Movie(int id, string name, int year){
+    movieID = id;
+    movieName = name;
+    yearPublished = year;
+
+  }
+
+  void calcuateAvgReview(vector<Review> &reviews){
+
+    
+    // auto iter = find_if(reviews.begin(), reviews.end(), 
+    //     [=] (Review& r){
+
+    //       bool equal = r.getMovieID() == movieID; 
+
+    //       if(equal) {
+    //         //cout<<endl<<"HERE TWO"<<endl;
+    //         movieReviews.push_back(r);
+    //         averageRating += r.getRating();
+    //         numReviews++;
+    //       }
+    //       return equal; 
+    //     } 
+    //     //add review to 
+        
+    // );
+
+    for(Review r: reviews){
+
+      if (r.getMovieID() == movieID){
+        movieReviews.push_back(r);
+        averageRating += r.getRating();
+        numReviews++;
+      }
+    }
+
+    averageRating = double(averageRating)/double(numReviews);
+
+    cout<<"AVERAGE RATING: "<<movieName<<" "<<averageRating<<endl;
+
+    //TODO
+    return;
+  }
+
+  void printMovie(int i){
+    cout<<i+1<<".\t"<<movieID<<"\t"<<numReviews<<
+    "\t"<<averageRating<<"\t'"<<movieName<<"'"<<endl;
+  }
+
+  int getMovieID(){return movieID;}
+  string getMovieName(){return movieName;}
+  int getMovieYear(){return yearPublished;}
+  int getNumReviews(){return numReviews;}
+  double getMovieRating(){return averageRating;}
+
+};
+
+
 
 void parseMovieFile(string &filename, vector<Movie> &movieVector){
   ifstream file(filename);
@@ -96,6 +151,8 @@ void parseMovieFile(string &filename, vector<Movie> &movieVector){
     
     movieVector.push_back(movie1);
   }
+
+  cout<<">> Reading movies... "<<movieVector.size()<<endl;
 }
 
 void parseReviewFile(string &filename, vector<Review> &reviewVector){
@@ -126,7 +183,48 @@ void parseReviewFile(string &filename, vector<Review> &reviewVector){
     
     reviewVector.push_back(review1);
   }
+
+  cout<<">> Reading reviews... "<<reviewVector.size()<<endl;
 }
+
+
+void sortMovies(vector<Movie> &movies){
+  sort(movies.begin(), movies.end(), 
+    [=](Movie &a, Movie &b) -> bool{ 
+        return a.getMovieRating() > b.getMovieRating(); 
+    }
+  );
+
+  
+
+}
+
+void printTop10Movies(vector<Movie> &movies, vector<Review> &reviews){
+
+
+
+  // for(auto m: movies){
+  //   m.calcuateAvgReview(reviews);
+  // }
+
+  // sortMovies(movies);
+
+  //cout<<"MOVIE 0 RATING: "<<movies[7].getMovieRating()<<endl;
+  
+
+  cout<<endl<<">> Top-10 Movies <<"<<endl<<endl;
+
+  cout<<"Rank\tID\tReviews\tAvg\tName"<<endl;
+
+  for(int i =0; i<10; i++){
+    cout<<i+1<<".\t"<<movies[i].getMovieID()<<"\t"<<movies[i].getNumReviews()<<
+    "\t"<<movies[i].getMovieRating()<<"\t'"<<movies[i].getMovieName()<<"'"<<endl;
+
+  }
+
+}
+
+
 
 int main()
 {
@@ -143,11 +241,14 @@ int main()
   //
   
 
-  cin >> moviesFN;
-  cin >> reviewsFN;
+  moviesFN ="movies.csv";
+  reviewsFN ="reviews.csv";
+  // UN COMMENT WHEN DONE
+  // cin >> moviesFN;
+  // cin >> reviewsFN;
 
-  //cout << moviesFN << endl;
-  //cout << reviewsFN << endl;
+
+
   cout << endl;
 
   //
@@ -157,10 +258,18 @@ int main()
   parseMovieFile(moviesFN,movies);
   parseReviewFile(reviewsFN,reviews);
 
+  sortMovies(movies);
 
+  for(Movie m: movies){
+    m.calcuateAvgReview(reviews);
 
-  
+  }
 
+  // for(int i =0;i<10; i++){
+  //   cout<<movies[i].getMovieName()<<endl;
+  // }
+
+  printTop10Movies(movies,reviews);
 
   //
   // done:
