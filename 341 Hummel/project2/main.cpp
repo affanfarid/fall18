@@ -280,13 +280,13 @@ void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
       //searches movies
       for(auto &m: movies){
         if(m.getMovieID() == num){
-          m.calcuateAvgReview(reviews);
+          //m.calcuateAvgReview(reviews);
           printMovie(m);
           found = true;
           break;
         }
       }
-      //TODO
+      
       if(!found)cout<<"movie not found..."<<endl<<endl;
       continue;
     }
@@ -308,11 +308,11 @@ int main()
   cout << endl;
 
   // input the filenames to process:
-  moviesFN ="movies.csv";
-  reviewsFN ="reviews.csv";
+  //moviesFN ="movies.csv";
+  //reviewsFN ="reviews.csv";
   // UN COMMENT WHEN DONE
-  // cin >> moviesFN;
-  // cin >> reviewsFN;
+  cin >> moviesFN;
+  cin >> reviewsFN;
 
   cout << endl;
 
@@ -320,7 +320,7 @@ int main()
   parseReviewFile(reviewsFN,reviews);
 
   //PART 1
-  //printTop10Movies(movies,reviews);
+  printTop10Movies(movies,reviews);
 
   //PART 2
   movieReviewInfo(movies,reviews);
