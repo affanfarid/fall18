@@ -140,6 +140,7 @@ void parseMovieFile(string &filename, vector<Movie> &movieVector, map<int,Movie>
     
     Movie movie1(stoi(id),name,stoi(year));
     
+    //adds movie to vector and map
     movieVector.push_back(movie1);
     moviesmap.insert ( pair<int,Movie>( stoi(id),movie1) );
   }
@@ -151,6 +152,7 @@ void parseReviewFile(string &filename, vector<Review> &reviewVector, map<int,Rev
 
   string line, rid, mid, uid, rate, date;
 
+  //checks if file exists
   if (!file.good()){ 
     cout  <<  "cannot  open  file!"  <<  endl;
     return;  
@@ -172,6 +174,7 @@ void parseReviewFile(string &filename, vector<Review> &reviewVector, map<int,Rev
     
     Review review1(stoi(rid),stoi(mid),stoi(uid),stoi(rate), date);
     
+    //saves each review in vector and map
     reviewVector.push_back(review1);
     reviewsmap.insert ( pair<int,Review>(stoi(rid),review1) );
   }
@@ -179,10 +182,8 @@ void parseReviewFile(string &filename, vector<Review> &reviewVector, map<int,Rev
   cout<<">> Reading reviews... "<<reviewVector.size()<<endl;
 }
 
-
-
-
 void sortMovies(vector<Movie> &movies){
+  //sorts movies
   sort(movies.begin(), movies.end(), 
     [=](Movie &a, Movie &b) -> bool{ 
         return a.getMovieRating() > b.getMovieRating(); 
@@ -194,12 +195,15 @@ void sortMovies(vector<Movie> &movies){
 }
 void printTop10Movies(vector<Movie> &movies, vector<Review> &reviews){
 
+  //searches movies vector and calculates reviews 
   for(auto &m: movies){
     m.calcuateAvgReview(reviews);
   }
 
+  //sorts the movies in he movies vector
   sortMovies(movies);
 
+  //prints movies
   cout<<endl<<">> Top-10 Movies <<"<<endl<<endl;
 
   cout<<"Rank\tID\tReviews\tAvg\tName"<<endl;
@@ -212,33 +216,15 @@ void printTop10Movies(vector<Movie> &movies, vector<Review> &reviews){
 
 }
 
-//DELETE
-// void printReview(Review &r, vector<Movie> movies){
 
-//   string movieName;
-
-//   for(auto &m: movies){
-//     if(r.getMovieID() == m.getMovieID()){
-//       movieName = m.getMovieName();
-//       break;
-//     }
-//   }
-
-//   cout<<"Movie: "<<r.getMovieID() <<"\t("<<movieName<<")"<<endl;
-//   cout<<"Num stars:\t"<<r.getRating()<<endl;;
-//   cout<<"User id:\t"<<r.getUserID()<<endl;
-//   cout<<"Date:\t\t"<<r.getReviewDate()<<endl;
-
-// }
-
-void printReview2(Review &r, map<int,Movie> movies){
+void printReview(Review &r, map<int,Movie> movies){
 
   string movieName;
 
-  //HERE
-  //movies.find(num)
+  //gets the movie name from the review id
   movieName = (movies.find( r.getMovieID() )->second).getMovieName();
 
+  //prints information
   cout<<"Movie: "<<r.getMovieID() <<"\t("<<movieName<<")"<<endl;
   cout<<"Num stars:\t"<<r.getRating()<<endl;;
   cout<<"User id:\t"<<r.getUserID()<<endl;
@@ -267,108 +253,55 @@ void printMovie(Movie & m){
 
 }
 
-//DELETE
-// void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
-//   string input;
-//   int num;
-//   bool found;
 
-//   cout<<endl<<">> Movie and Review Information <<"<<endl<<endl;
-
-//   while(true){
-//     found = false;
-//     cout<<"Please enter a movie ID (< 100,000), a review ID (>= 100,000), 0 to stop> ";
-//     cin>>input;
-//     num = stoi(input);
-//     cout<<endl;
-
-    
-//     if(num == 0) return;
-//     else if(num < 0) {
-//       cout<<"**invalid id..."<<endl<<endl; continue;
-//     }
-//     else if(num>100000){
-//       //searches reviews
-//       for(auto &r: reviews){
-//         if(r.getReviewID() == num){
-//           printReview(r,movies);
-//           found = true;
-//           break;
-//         }
-//       }
-//       //TODO
-//       if (!found)cout<<"review not found..."<<endl<<endl;
-//       continue;
-
-//     }
-//     else {
-//       //searches movies
-//       for(auto &m: movies){
-//         if(m.getMovieID() == num){
-//           //m.calcuateAvgReview(reviews);
-//           printMovie(m);
-//           found = true;
-//           break;
-//         }
-//       }
-      
-//       if(!found)cout<<"movie not found..."<<endl<<endl;
-//       continue;
-//     }
-
-//   }
-
-// }
-
-
-void movieReviewInfoMap(map<int,Movie> &movies, map<int,Review> &reviews, vector<Review> &reviewsVEC){
+void movieReviewInfo(map<int,Movie> &movies, map<int,Review> &reviews, vector<Review> &reviewsVEC){
+  //inputs the maps of movies and the reviews vector
+  //determines if the input is a movie id, review id, or neither and prints out respective info
   string input;
   int num;
   bool found;
 
   cout<<endl<<">> Movie and Review Information <<"<<endl<<endl;
 
+  //continues loops always asks for new input
   while(true){
+
+    //prints prompt and takes in input as integer, resets the found variable to false
     found = false;
     cout<<"Please enter a movie ID (< 100,000), a review ID (>= 100,000), 0 to stop> ";
     cin>>input;
     num = stoi(input);
     cout<<endl;
 
-    
+    //quits the loop if input is 0
     if(num == 0) return;
+    //prints invalid id if input is negative
     else if(num < 0) {
       cout<<"**invalid id..."<<endl<<endl; continue;
     }
+
+    //searches reviews if input is greater than 100000
     else if(num>100000){
-      //TODO
-
-      //searches reviews
-
-      //reviews.find(num);
-
-      //check if reviews contains the actual review
-      //DOUBLE CHECK
+      //check if reviews map contains the actual review that was inputted
       if( reviews.find(num) != reviews.end()  ){
-        printReview2( reviews.find(num)->second , movies );
+        //prints the review and marks it as found
+        printReview( reviews.find(num)->second , movies );
         found = true;
       }
-      
+      //prints if review is not found
       if (!found)cout<<"review not found..."<<endl<<endl;
       continue;
-
     }
+
+    //searches movies
     else {
-      //TODO
-
-      //searches movies
-
-      if( movies.find(num) != movies.end()  ){
+      if( movies.find(num) != movies.end() ){
+        //calculates the average rating and then prints movie info
         (movies.find(num)->second).calcuateAvgReview(reviewsVEC);
         printMovie( movies.find(num)->second );
         found = true;
       }
-      
+      //prints if movie is not found
       if(!found)cout<<"movie not found..."<<endl<<endl;
       continue;
     }
@@ -381,34 +314,34 @@ void movieReviewInfoMap(map<int,Movie> &movies, map<int,Review> &reviews, vector
 int main()
 {
 
+  //declares vectors and maps
   string moviesFN, reviewsFN;
   vector<Movie> movies;
   vector<Review> reviews;
-
   map<int,Movie> moviesmap;
   map<int,Review> reviewsmap;
 
+  //prints title
   cout << "** Netflix Movie Review Analysis **" << endl;
   cout << endl;
 
   // input the filenames to process:
-  moviesFN ="movies.csv";
-  reviewsFN ="reviews.csv";
-  // UN COMMENT WHEN DONE
-  //cin >> moviesFN;
-  //cin >> reviewsFN;
+  cin >> moviesFN;
+  cin >> reviewsFN;
 
   cout << endl;
 
+  //parses the files and adds them to the vectors and maps
   parseMovieFile(moviesFN,movies,moviesmap);
   parseReviewFile(reviewsFN,reviews,reviewsmap);
 
   //PART 1
+  //uses vectors in part 1
   printTop10Movies(movies,reviews);
 
   //PART 2
-  //movieReviewInfo(movies,reviews);
-  movieReviewInfoMap(moviesmap,reviewsmap,reviews);
+  //uses maps in part 2
+  movieReviewInfo(moviesmap,reviewsmap,reviews);
 
   cout << "** DONE! **" << endl << endl;
 
