@@ -116,7 +116,7 @@ class Movie{
 
 };
 
-void parseMovieFile(string &filename, vector<Movie> &movieVector){
+void parseMovieFile(string &filename, vector<Movie> &movieVector, map<int,Movie> &moviesmap){
   ifstream file(filename);
 
   string line, id, name, year;
@@ -141,11 +141,12 @@ void parseMovieFile(string &filename, vector<Movie> &movieVector){
     Movie movie1(stoi(id),name,stoi(year));
     
     movieVector.push_back(movie1);
+    moviesmap.insert ( pair<int,Movie>( stoi(id),movie1) );
   }
 
   cout<<">> Reading movies... "<<movieVector.size()<<endl;
 }
-void parseReviewFile(string &filename, vector<Review> &reviewVector){
+void parseReviewFile(string &filename, vector<Review> &reviewVector, map<int,Review> &reviewsmap){
   ifstream file(filename);
 
   string line, rid, mid, uid, rate, date;
@@ -172,10 +173,15 @@ void parseReviewFile(string &filename, vector<Review> &reviewVector){
     Review review1(stoi(rid),stoi(mid),stoi(uid),stoi(rate), date);
     
     reviewVector.push_back(review1);
+    reviewsmap.insert ( pair<int,Review>(stoi(rid),review1) );
   }
 
   cout<<">> Reading reviews... "<<reviewVector.size()<<endl;
 }
+
+
+
+
 void sortMovies(vector<Movie> &movies){
   sort(movies.begin(), movies.end(), 
     [=](Movie &a, Movie &b) -> bool{ 
@@ -206,22 +212,38 @@ void printTop10Movies(vector<Movie> &movies, vector<Review> &reviews){
 
 }
 
-//TODO
-void printReview(Review &r, vector<Movie> movies){
+//DELETE
+// void printReview(Review &r, vector<Movie> movies){
+
+//   string movieName;
+
+//   for(auto &m: movies){
+//     if(r.getMovieID() == m.getMovieID()){
+//       movieName = m.getMovieName();
+//       break;
+//     }
+//   }
+
+//   cout<<"Movie: "<<r.getMovieID() <<"\t("<<movieName<<")"<<endl;
+//   cout<<"Num stars:\t"<<r.getRating()<<endl;;
+//   cout<<"User id:\t"<<r.getUserID()<<endl;
+//   cout<<"Date:\t\t"<<r.getReviewDate()<<endl;
+
+// }
+
+void printReview2(Review &r, map<int,Movie> movies){
 
   string movieName;
 
-  for(auto &m: movies){
-    if(r.getMovieID() == m.getMovieID()){
-      movieName = m.getMovieName();
-      break;
-    }
-  }
+  //HERE
+  //movies.find(num)
+  movieName = (movies.find( r.getMovieID() )->second).getMovieName();
 
   cout<<"Movie: "<<r.getMovieID() <<"\t("<<movieName<<")"<<endl;
   cout<<"Num stars:\t"<<r.getRating()<<endl;;
   cout<<"User id:\t"<<r.getUserID()<<endl;
   cout<<"Date:\t\t"<<r.getReviewDate()<<endl;
+  cout<<endl;
 
 }
 
@@ -241,9 +263,65 @@ void printMovie(Movie & m){
   for(int i =2; i<=5; i++){
     cout<<" "<<i<<" stars:\t"<<m.getNumStars(i)<<endl;
   }
+  cout<<endl;
+
 }
 
-void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
+//DELETE
+// void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
+//   string input;
+//   int num;
+//   bool found;
+
+//   cout<<endl<<">> Movie and Review Information <<"<<endl<<endl;
+
+//   while(true){
+//     found = false;
+//     cout<<"Please enter a movie ID (< 100,000), a review ID (>= 100,000), 0 to stop> ";
+//     cin>>input;
+//     num = stoi(input);
+//     cout<<endl;
+
+    
+//     if(num == 0) return;
+//     else if(num < 0) {
+//       cout<<"**invalid id..."<<endl<<endl; continue;
+//     }
+//     else if(num>100000){
+//       //searches reviews
+//       for(auto &r: reviews){
+//         if(r.getReviewID() == num){
+//           printReview(r,movies);
+//           found = true;
+//           break;
+//         }
+//       }
+//       //TODO
+//       if (!found)cout<<"review not found..."<<endl<<endl;
+//       continue;
+
+//     }
+//     else {
+//       //searches movies
+//       for(auto &m: movies){
+//         if(m.getMovieID() == num){
+//           //m.calcuateAvgReview(reviews);
+//           printMovie(m);
+//           found = true;
+//           break;
+//         }
+//       }
+      
+//       if(!found)cout<<"movie not found..."<<endl<<endl;
+//       continue;
+//     }
+
+//   }
+
+// }
+
+
+void movieReviewInfoMap(map<int,Movie> &movies, map<int,Review> &reviews, vector<Review> &reviewsVEC){
   string input;
   int num;
   bool found;
@@ -263,28 +341,32 @@ void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
       cout<<"**invalid id..."<<endl<<endl; continue;
     }
     else if(num>100000){
-      //searches reviews
-      for(auto &r: reviews){
-        if(r.getReviewID() == num){
-          printReview(r,movies);
-          found = true;
-          break;
-        }
-      }
       //TODO
+
+      //searches reviews
+
+      //reviews.find(num);
+
+      //check if reviews contains the actual review
+      //DOUBLE CHECK
+      if( reviews.find(num) != reviews.end()  ){
+        printReview2( reviews.find(num)->second , movies );
+        found = true;
+      }
+      
       if (!found)cout<<"review not found..."<<endl<<endl;
       continue;
 
     }
     else {
+      //TODO
+
       //searches movies
-      for(auto &m: movies){
-        if(m.getMovieID() == num){
-          //m.calcuateAvgReview(reviews);
-          printMovie(m);
-          found = true;
-          break;
-        }
+
+      if( movies.find(num) != movies.end()  ){
+        (movies.find(num)->second).calcuateAvgReview(reviewsVEC);
+        printMovie( movies.find(num)->second );
+        found = true;
       }
       
       if(!found)cout<<"movie not found..."<<endl<<endl;
@@ -296,7 +378,6 @@ void movieReviewInfo(vector<Movie> &movies, vector<Review> &reviews){
 }
 
 
-
 int main()
 {
 
@@ -304,26 +385,30 @@ int main()
   vector<Movie> movies;
   vector<Review> reviews;
 
+  map<int,Movie> moviesmap;
+  map<int,Review> reviewsmap;
+
   cout << "** Netflix Movie Review Analysis **" << endl;
   cout << endl;
 
   // input the filenames to process:
-  //moviesFN ="movies.csv";
-  //reviewsFN ="reviews.csv";
+  moviesFN ="movies.csv";
+  reviewsFN ="reviews.csv";
   // UN COMMENT WHEN DONE
-  cin >> moviesFN;
-  cin >> reviewsFN;
+  //cin >> moviesFN;
+  //cin >> reviewsFN;
 
   cout << endl;
 
-  parseMovieFile(moviesFN,movies);
-  parseReviewFile(reviewsFN,reviews);
+  parseMovieFile(moviesFN,movies,moviesmap);
+  parseReviewFile(reviewsFN,reviews,reviewsmap);
 
   //PART 1
   printTop10Movies(movies,reviews);
 
   //PART 2
-  movieReviewInfo(movies,reviews);
+  //movieReviewInfo(movies,reviews);
+  movieReviewInfoMap(moviesmap,reviewsmap,reviews);
 
   cout << "** DONE! **" << endl << endl;
 
