@@ -1,0 +1,24 @@
+sort
+-returns a void
+-(V.begin(), V.end, 
+	[=]lambda to compare (Obj &i1, Obj &i2) return (i1.getValue() > i2.getValue);
+)
+
+find_if()
+-returns an iter
+-(V.begin(), V.end(), 
+	[=](Obj &i1) return (i1.getValue() == randomValue);
+
+)
+
+accumulate
+-returns a number
+-(V.begin(),V.end(), 0., 
+	[=](double currentSum, Obj const& i1) return ( currentSum + i1.getValue() ); 
+)
+
+count_if
+-returns a number
+-(V.begin(), V.end(), 
+	[=] (Obj & i1) return (i1.value() > thresholdInt);
+)
