@@ -3,7 +3,7 @@ JC = javac
 .SUFFIXES: .java .class
 .java.class:
 	$(JC) $(JFLAGS) $*.java
-ALL = Direction.java Place.java Game.java GameTester.java
+ALL = Direction.java Place.java Game.java Artifact.java GameTester.java
 
 #default: classes
 default: clean jar clear
@@ -19,6 +19,3 @@ clean:
 
 clear:
 	$(RM) *.class
-
-#to run:
-#>>java -cp proj1.jar GameTester
