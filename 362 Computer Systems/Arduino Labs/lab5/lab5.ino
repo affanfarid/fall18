@@ -26,24 +26,24 @@ void displayLights(int x){
   digitalWrite(LED4, LOW);
 
   
-  if(x < 20){
+  if(x < 59){
     digitalWrite(LED1, HIGH);
     digitalWrite(LED2, HIGH);
     digitalWrite(LED3, HIGH);
     digitalWrite(LED4, HIGH);
     return;
   }
-  else if ( x < 40){
+  else if ( x < 65){
     digitalWrite(LED1, HIGH);
     digitalWrite(LED2, HIGH);
     digitalWrite(LED3, HIGH);
     return;
   }
-  else if( x < 65 ){
+  else if( x < 80 ){
     digitalWrite(LED1, HIGH);
     digitalWrite(LED2, HIGH);
   }
-  else if( x < 100){
+  else if( x < 150){
     digitalWrite(LED1, HIGH);
   }
   
@@ -72,8 +72,9 @@ void loop(){
 
   //displays the amount of lights based on inputs
   displayLights(lightVal);
-  
-  Serial.print(lightVal);
+
+  Serial.print(potVal);
+  //Serial.print(lightVal);
   Serial.print("\n");
 
   //sounds buzzer tone based on input
