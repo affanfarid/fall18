@@ -1,15 +1,24 @@
+//Affan Farid UIN: 671455693
+//Lab 5 - Multiple Inputs and outputs
+//A program that buzzes a tone based on a potentiometer input, as well as an amount of lights based on photoresistor input
+//Assumptions: Expected Arduino Uno, Potentiometer,LEDs, Buzzer, and Photosensor were all functional
+//References: Arduino website to help set up buzzer, and LEDs, as well as potentiometer invididually
 
 const int pResistor = A0; // Photoresistor at Arduino analog pin A0
 const int buzzer = 9; //buzzer to arduino pin 9
-const int potPin = A2;
+const int potPin = A2; //potentiometer at analog pin A2
+//intialize lightValue and potentiometerValue
 int lightVal;
 int potVal = 0;
 
+//LED output pins initialization
 const int LED1 = 4;
 const int LED2 = 5;
 const int LED3 = 6;
 const int LED4 = 7;
 
+
+//function to display lights based on photosensor input amount
 void displayLights(int x){
   digitalWrite(LED1, LOW);
   digitalWrite(LED2, LOW);
@@ -41,7 +50,7 @@ void displayLights(int x){
 }
 
 
-
+//initializes inputs and outputs
 void setup(){
   Serial.begin(9600);
 
@@ -55,25 +64,23 @@ void setup(){
 
 }
 
+
 void loop(){
-
-//  digitalWrite(LED1, HIGH);
-//  digitalWrite(LED2, HIGH);
-//  digitalWrite(LED3, HIGH);
-//  digitalWrite(LED4, HIGH);
-
-  
+  //reads the values of the analog inputs
   lightVal = analogRead(pResistor);
   potVal = analogRead(potPin);
 
+  //displays the amount of lights based on inputs
   displayLights(lightVal);
   
   Serial.print(lightVal);
   Serial.print("\n");
+
+  //sounds buzzer tone based on input
   tone(buzzer, potVal);
   //tone(buzzer, 1000); // Send 1KHz sound signal...
   delay(500);        // ...for 1 sec
 //  noTone(buzzer);     // Stop sound...
-//  delay(1000);        // ...for 1sec
+
   
 }
