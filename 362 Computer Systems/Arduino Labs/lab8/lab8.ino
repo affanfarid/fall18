@@ -1,8 +1,8 @@
 //Affan Farid UIN: 671455693
-//Lab 6 - Communication
-//A program that takes a time/date input and displays it counting up on an LCD
-//Assumptions: Expected Arduino Uno, Potentiometer,LCD were all functional
-//References: Arduino Example TimeSerial, arduino Time library
+//Lab 8 - Interrupts
+//A program that displays a timer, and then stops it and resets it when 2 buttons are pressed
+//Assumptions: Expected Arduino Uno, Potentiometer,LCD, and buttons were all functional
+//References: Previous labs for button handling, LCD setup, and Time functionality, Interrupt Arduino Guide
 
 #include <TimeLib.h>
 #define TIME_HEADER  "T"   // Header tag for serial time sync message
@@ -14,12 +14,9 @@
 const int rs = 12, en = 11, d4 = 7, d5 = 6, d6 = 5, d7 = 4; //defines the ports
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);  //initializes the lcd screen
 
+//initialize button yellow and red, as well as the flag
 int btnPinR = 2;
-int prevStateR = 0;
-
 int btnPinY = 3;
-int prevStateY = 0;
-
 int flag = 0; 
 
 void setup()  {
@@ -28,12 +25,16 @@ void setup()  {
   
   Serial.begin(9600);
   pinMode(13, OUTPUT);
-  resetTime();
+  resetTime(); //sets the time to 0
+
+  //connects button Red to an interrupt for func1, and the yellow button the same for func2
   attachInterrupt(digitalPinToInterrupt(btnPinR), func1, CHANGE);
   attachInterrupt(digitalPinToInterrupt(btnPinY), func2, CHANGE);
 }
 
 void func1(){
+  //sets the flag to 1 so the counter wont keep going
+  //prints how the interrupt is received on the lcd
   flag = 1; 
   lcd.setCursor(0,0);
   lcd.print("IntReceived.Prs2");
@@ -41,21 +42,18 @@ void func1(){
 }
 
 void func2(){
+  //sets the time to 0, and changes the flag
   resetTime();
   flag = 0;
 }
 
 void loop(){
 
+  //only displays the clock counter if the flag is 0
   if(!flag){
     digitalClockDisplay();      
   }
-//  else{
-//    
-//  }
-  //displays time
     
-
   delay(1000);
 }
 
@@ -78,11 +76,11 @@ void printDigits(int digits){
     Serial.print('0');
     lcd.print('0');
   }
-
   Serial.print(digits);
   lcd.print(digits);
 }
 
 void resetTime(){
+    //sets the time to 0
     setTime(0,0,0,0,0,0);
 }
